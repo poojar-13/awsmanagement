@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ResumeAI — Intelligent Resume Analyzer</title>
+  <meta name="description" content="AI-powered resume analyzer. Get ATS scores, keyword insights, and actionable improvements in seconds." />
+
+  <!-- Google Fonts: Syne (display) + DM Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <!-- PDF.js from CDN (for PDF text extraction) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <!-- Mammoth.js from CDN (for DOCX text extraction) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+
+  <!-- Our config and stylesheets -->
+  <script src="config.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="#">
+        <span class="logo-icon">✦</span>
+        Resume<span class="logo-accent">AI</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#upload-section">Analyze</a></li>
+        <li><a href="#features-section">Features</a></li>
+      </ul>
+      <a class="nav-cta" href="#upload-section">Get Started</a>
+    </div>
+  </nav>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero" id="hero">
+    <!-- Animated background orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        AI-Powered · Free to Use · Instant Results
+      </div>
+      <h1 class="hero-title">
+        Your Resume,<br />
+        <span class="gradient-text">Supercharged by AI</span>
+      </h1>
+      <p class="hero-subtitle">
+        Upload your resume and get an instant ATS score, missing keywords,
+        rewritten summary, and actionable improvements — powered by Gemini AI.
+      </p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#upload-section">
+          Analyze My Resume
+          <span class="btn-arrow">→</span>
+        </a>
+        <span class="hero-note">PDF or DOCX · No signup required</span>
+      </div>
+
+      <!-- Stats row -->
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">ATS</span>
+          <span class="stat-label">Score Analysis</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">10+</span>
+          <span class="stat-label">Improvement Tips</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">AI</span>
+          <span class="stat-label">Gemini Powered</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FEATURES STRIP ===================== -->
+  <section class="features-section" id="features-section">
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Instant ATS Score</h3>
+        <p>See exactly how well your resume performs against applicant tracking systems.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Keyword Analysis</h3>
+        <p>Discover missing industry keywords that recruiters and bots look for.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✍️</div>
+        <h3>AI Rewrite</h3>
+        <p>Get a professionally rewritten summary that makes you stand out.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📈</div>
+        <h3>Impact Metrics</h3>
+        <p>Learn how to quantify your achievements for maximum recruiter impact.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== UPLOAD SECTION ===================== -->
+  <section class="upload-section" id="upload-section">
+    <div class="section-header">
+      <h2 class="section-title">Upload Your Resume</h2>
+      <p class="section-subtitle">Drag & drop or click to select a PDF or DOCX file</p>
+    </div>
+
+    <!-- Drop Zone -->
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept=".pdf,.docx" hidden />
+
+      <!-- Default empty state -->
+      <div class="drop-state" id="dropDefault">
+        <div class="drop-icon">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <path d="M24 4L24 32M24 4L14 14M24 4L34 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 34V40C8 42.2 9.8 44 12 44H36C38.2 44 40 42.2 40 40V34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p class="drop-title">Drop your resume here</p>
+        <p class="drop-sub">PDF or DOCX · Max 10MB</p>
+        <button class="btn-upload" id="browseBtn">Browse Files</button>
+      </div>
+
+      <!-- Drag-over state (shown while dragging) -->
+      <div class="drop-state drop-state--hover" id="dropHover" style="display:none;">
+        <div class="drop-icon drop-icon--glow">↓</div>
+        <p class="drop-title">Release to upload</p>
+      </div>
+
+      <!-- Success state (shown after upload) -->
+      <div class="drop-state drop-state--success" id="dropSuccess" style="display:none;">
+        <div class="drop-icon drop-icon--success">✓</div>
+        <p class="drop-title" id="successFileName">resume.pdf</p>
+        <p class="drop-sub" id="successFileSize">128 KB</p>
+        <button class="btn-upload btn-upload--secondary" id="changeFileBtn">Change File</button>
+      </div>
+    </div>
+
+    <!-- Error message (shown when file type is wrong) -->
+    <div class="upload-error" id="uploadError" style="display:none;">
+      <span>⚠</span> <span id="errorText">Please upload a PDF or DOCX file.</span>
+    </div>
+
+    <!-- Analyze button -->
+    <div class="analyze-wrapper">
+      <button class="btn-analyze" id="analyzeBtn" disabled>
+        <span class="btn-analyze-text">Analyze Resume</span>
+        <span class="btn-analyze-icon">✦</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===================== LOADING STATE ===================== -->
+  <section class="loading-section" id="loadingSection" style="display:none;">
+    <div class="loading-card">
+      <div class="loading-spinner">
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring spinner-ring--2"></div>
+        <div class="spinner-core">✦</div>
+      </div>
+      <h3 class="loading-title">Analyzing your resume…</h3>
+      <div class="loading-steps">
+        <div class="loading-step" id="step1">
+          <span class="step-dot step-dot--active"></span>
+          <span>Extracting resume content</span>
+        </div>
+        <div class="loading-step" id="step2">
+          <span class="step-dot"></span>
+          <span>Running ATS compatibility check</span>
+        </div>
+        <div class="loading-step" id="step3">
+          <span class="step-dot"></span>
+          <span>Generating AI recommendations</span>
+        </div>
+        <div class="loading-step" id="step4">
+          <span class="step-dot"></span>
+          <span>Crafting improved summary</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== RESULTS DASHBOARD ===================== -->
+  <section class="results-section" id="resultsSection" style="display:none;">
+
+    <!-- Results header -->
+    <div class="results-header">
+      <div>
+        <h2 class="section-title">Analysis Complete</h2>
+        <p class="section-subtitle" id="resultFileName">resume.pdf · analyzed just now</p>
+      </div>
+      <button class="btn-reanalyze" id="reanalyzeBtn">↺ Analyze Another</button>
+    </div>
+
+    <!-- ── ROW 1: ATS Score + Quick Stats ── -->
+    <div class="results-row results-row--top">
+
+      <!-- ATS Score Card -->
+      <div class="glass-card ats-card">
+        <div class="card-label">ATS Compatibility Score</div>
+        <div class="ats-score-wrap">
+          <div class="ats-donut" id="atsDoughnut">
+            <svg viewBox="0 0 120 120">
+              <circle class="donut-bg" cx="60" cy="60" r="52" />
+              <circle class="donut-fill" id="donutFill" cx="60" cy="60" r="52"
+                stroke-dasharray="0 327"
+                stroke-dashoffset="0" />
+            </svg>
+            <div class="ats-number" id="atsNumber">0</div>
+          </div>
+          <div class="ats-meta">
+            <div class="ats-grade" id="atsGrade">—</div>
+            <div class="ats-verdict" id="atsVerdict">Awaiting analysis</div>
+            <div class="ats-bar-wrap">
+              <div class="ats-bar" id="atsBar"></div>
+            </div>
+            <div class="ats-range-labels">
+              <span>0</span><span>50</span><span>100</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Counts Card -->
+      <div class="glass-card counts-card">
+        <div class="card-label">At a Glance</div>
+        <div class="counts-grid">
+          <div class="count-item">
+            <span class="count-num" id="countStrengths">0</span>
+            <span class="count-label">Strengths</span>
+          </div>
+          <div class="count-item">
+            <span class="count-num" id="countWeaknesses">0</span>
+            <span class="count-label">Weaknesses</span>
+          </div>
+          <div class="count-item">
+            <span class="count-num" id="countKeywords">0</span>
+            <span class="count-label">Missing Keywords</span>
+          </div>
+          <div class="count-item">
+            <span class="count-num" id="countSkills">0</span>
+            <span class="count-label">Skills to Add</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ROW 2: Strengths + Weaknesses ── -->
+    <div class="results-row results-row--two">
+
+      <!-- Strengths -->
+      <div class="glass-card">
+        <div class="card-header">
+          <div class="card-label">
+            <span class="card-label-icon card-label-icon--green">▲</span>
+            Strengths
+          </div>
+        </div>
+        <ul class="insight-list" id="strengthsList"></ul>
+      </div>
+
+      <!-- Weaknesses -->
+      <div class="glass-card">
+        <div class="card-header">
+          <div class="card-label">
+            <span class="card-label-icon card-label-icon--red">▼</span>
+            Weaknesses
+          </div>
+        </div>
+        <ul class="insight-list" id="weaknessesList"></ul>
+      </div>
+    </div>
+
+    <!-- ── ROW 3: Missing Keywords + Suggested Skills ── -->
+    <div class="results-row results-row--two">
+
+      <!-- Missing Keywords -->
+      <div class="glass-card">
+        <div class="card-header">
+          <div class="card-label">
+            <span class="card-label-icon card-label-icon--yellow">◈</span>
+            Missing Keywords
+          </div>
+        </div>
+        <div class="tags-wrap" id="keywordsTags"></div>
+      </div>
+
+      <!-- Suggested Skills -->
+      <div class="glass-card">
+        <div class="card-header">
+          <div class="card-label">
+            <span class="card-label-icon card-label-icon--blue">✦</span>
+            Suggested Skills to Add
+          </div>
+        </div>
+        <div class="tags-wrap" id="skillsTags"></div>
+      </div>
+    </div>
+
+    <!-- ── ROW 4: Improved Summary (full width) ── -->
+    <div class="glass-card glass-card--full">
+      <div class="card-header">
+        <div class="card-label">
+          <span class="card-label-icon card-label-icon--purple">✍</span>
+          AI-Improved Professional Summary
+        </div>
+        <button class="copy-btn" id="copySummaryBtn" data-target="summaryText">
+          <span class="copy-icon">⧉</span> Copy
+        </button>
+      </div>
+      <p class="summary-text" id="summaryText"></p>
+    </div>
+
+    <!-- ── ROW 5: Formatting Improvements ── -->
+    <div class="glass-card glass-card--full">
+      <div class="card-header">
+        <div class="card-label">
+          <span class="card-label-icon card-label-icon--cyan">⊞</span>
+          Formatting & Structure Improvements
+        </div>
+      </div>
+      <ul class="format-list" id="formattingList"></ul>
+    </div>
+
+    <!-- ── ROW 6: Impact Improvements ── -->
+    <div class="glass-card glass-card--full">
+      <div class="card-header">
+        <div class="card-label">
+          <span class="card-label-icon card-label-icon--orange">⬡</span>
+          Measurable Impact Improvements
+        </div>
+        <button class="copy-btn" id="copyImpactBtn" data-target="impactList">
+          <span class="copy-icon">⧉</span> Copy
+        </button>
+      </div>
+      <ul class="insight-list" id="impactList"></ul>
+    </div>
+
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-logo">✦ ResumeAI</span>
+      <span class="footer-note">Powered by Gemini AI · Built for job seekers</span>
+      <span class="footer-copy">© 2025 ResumeAI</span>
+    </div>
+  </footer>
+
+  <!-- Our main script -->
+  <script src="script.js"></script>
+</body>
+</html>
